@@ -11,34 +11,51 @@ if not GEMINI_API_KEY:
     st.error("❌ API Key not found! Please check your .env file.")
     st.stop()
 
-# Configure Gemini API
+# ✅ Configure Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
 
-# ✅ Use Correct Model
-model_name = "gemini-1.5-pro"  # 🔄 Change if needed
-model = genai.GenerativeModel(model_name)
+# ✅ Use Correct Model (Fix Applied)
+try:
+    model_name = "gemini-1.5-pro"  # 🔄 Change if needed
+    model = genai.GenerativeModel(model_name)
+except Exception as e:
+    st.error(f"❌ Failed to initialize model: {e}")
+    st.stop()
 
-# Light/Dark Mode Toggle
+# ✅ Set Page Config
 st.set_page_config(page_title="Unit Converter", layout="wide")
-mode = st.sidebar.radio("Select Mode", ["Light", "Dark"], index=0)
 
-# Apply CSS for Light and Dark Mode
+# ✅ Sidebar Mode Selection
+mode = st.sidebar.radio("🌗 Select Mode", ["Light", "Dark"], index=0)
+
+# ✅ Dynamic CSS for Light/Dark Mode
+if mode == "Light":
+    background_color = "#f5f5f5"
+    text_color = "#000000"
+    button_color = "#007BFF"
+    tab_color = "#e0e0e0"
+else:
+    background_color = "#181818"
+    text_color = "#FFFFFF"
+    button_color = "#555555"
+    tab_color = "#444444"
+
 custom_css = f"""
     <style>
-        body {{ background-color: {'#f5f5f5' if mode == 'Light' else '#181818'}; color: {'black' if mode == 'Light' else 'white'}; }}
-        .stTabs [data-baseweb="tab"] {{ background-color: {'#e0e0e0' if mode == 'Light' else '#444'}; padding: 10px; border-radius: 5px; }}
-        .stButton > button {{ background-color: {'#007BFF' if mode == 'Light' else '#555'}; color: white; border-radius: 5px; }}
-        .stSelectbox, .stNumberInput {{ width: 100% !important; }}
-        h2 {{ text-align: center; color: {'black' if mode == 'Light' else 'white'}; }}
+        body, .stApp {{ background-color: {background_color}; color: {text_color}; }}
+        .stTabs [data-baseweb="tab"] {{ background-color: {tab_color}; padding: 10px; border-radius: 5px; }}
+        .stButton > button {{ background-color: {button_color}; color: white; border-radius: 5px; }}
+        .stSelectbox, .stNumberInput, .stTextInput, .stTextArea, .stFileUploader {{ color: {text_color}; background-color: {background_color}; border: 1px solid {tab_color}; }}
+        h2, h3, h4, h5, h6, p, label, span {{ color: {text_color} !important; }}
     </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-# UI Layout
-st.markdown("<h2>🔢 AI-Powered Unit Converter</h2>", unsafe_allow_html=True)
+# ✅ UI Layout
+st.markdown(f"<h2 style='color: {text_color}; text-align: center;'>🔢 AI-Powered Unit Converter</h2>", unsafe_allow_html=True)
 tabs = st.tabs(["📏 Length", "🌡️ Temperature", "📐 Area", "🧪 Volume", "⚖️ Weight", "⏳ Time"])
 
-# Units Mapping
+# ✅ Units Mapping
 unit_categories = {
     "Length": ["Meter", "Kilometer", "Centimeter", "Millimeter", "Mile", "Yard", "Foot", "Inch"],
     "Temperature": ["Celsius", "Fahrenheit", "Kelvin"],
@@ -48,10 +65,10 @@ unit_categories = {
     "Time": ["Second", "Minute", "Hour", "Day"]
 }
 
-# Conversion Logic
+# ✅ Conversion Logic
 for i, category in enumerate(unit_categories.keys()):
     with tabs[i]:
-        st.subheader(f"{category} Converter")
+        st.subheader(f"{category} Converter", divider="rainbow")
 
         col1, col2 = st.columns(2)
         with col1:
