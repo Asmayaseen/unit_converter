@@ -88,3 +88,25 @@ for i, category in enumerate(unit_categories.keys()):
                         st.error("❌ Error: Could not generate response. Please try again.")
                 except Exception as e:
                     st.error(f"❌ API Error: {e}")
+            
+
+            # Ask Gemini AI Section
+st.header("💬 Unit Converter")
+user_prompt = st.text_area("Enter your question:", placeholder="Ask anything...")
+
+def ask_gemini(prompt):
+    try:
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"❌ Error: {e}"
+
+if st.button("Ask Unit🤖"):
+    if user_prompt.strip():
+        with st.spinner("Generating response..."):
+            gemini_response = ask_gemini(user_prompt)
+        # st.success("✅ Response from Gemini:")
+        st.write(gemini_response)
+    else:
+        st.warning("⚠️ Please enter a question before clicking the button.")  
